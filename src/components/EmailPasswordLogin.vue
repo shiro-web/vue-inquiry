@@ -49,13 +49,11 @@ const handleEmailPasswordLogin = () => {
         .then((userCredential) => {
             const user = userCredential.user;
             console.log("ログインに成功");
+            router.push("/list");
         })
         .catch((error) => {
             console.error(error);
-            console.log("ログインに失敗しました。");
+            alert("ログインに失敗しました。");
         })
-        .finally(() => {
-             router.push("/list");
-        });
 }
 </script>
