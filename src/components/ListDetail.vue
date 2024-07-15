@@ -48,7 +48,7 @@
 <script setup>
 import { addDoc, collection, doc, onSnapshot, orderBy, query, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { createPinia } from "pinia";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { db } from "../firebase";
 import { useAuthStore } from '../store';
@@ -59,9 +59,13 @@ const users = ref([]);
 const route = useRoute();
 const id = route.params.id;
 const authStore = useAuthStore();
-const adminUser = authStore.adminUser;
+const adminUser = ref(authStore.adminUser);
 
-onMounted(() => {
+onMounted(async() => {
+    // adminUserの変更をウォッチ
+  watch(() => authStore.adminUser, (newVal) => {
+    adminUser.value = newVal;
+  });
   const collectionRef = collection(db, "users", id, "messages");
   const q = query(collectionRef, orderBy("timestamp", "asc"));
   onSnapshot(q, (querySnapshot) => {
